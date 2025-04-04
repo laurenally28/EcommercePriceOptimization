@@ -12,7 +12,7 @@ from ml_units import predict_units
 from ml_price import predict_price
 
 # Read in data
-df = pd.read_csv('amz_us_price_prediction_dataset.csv')  # Update path if needed
+df = pd.read_csv('/Users/seanmerrkle/Desktop/Courses/DS4420/amz_us_price_prediction_dataset.csv')  # Update path if needed
 df = df.dropna()
 df['isBestSeller'] = df['isBestSeller'].astype(bool)
 features = ['stars', 'reviews', 'price', 'category', 'isBestSeller']
