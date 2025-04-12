@@ -1,0 +1,146 @@
+---
+title: "project_r"
+author: "Lauren Ally"
+date: "2025-04-07"
+output: html_document
+---
+```{r message=FALSE}
+library(brms)
+library(dplyr)
+library(ggplot2)
+
+```
+
+
+```{r}
+df <- read.csv("/Users/laurenally/Desktop/ML 2/amz_us_price_prediction_dataset.csv")
+```
+
+```{r}
+```
+
+
+```{r}
+#head(df)
+```
+
+```{r}
+# Log transform the target
+df$log_boughtInLastMonth <- log(df$boughtInLastMonth + 1)  # add 1 to avoid log(0)
+
+#df$isBestSeller <- factor(df$isBestSeller)
+df$category <- factor(df$category)
+
+```
+
+```{r}
+set.seed(42)
+sample_data <- df %>% sample_n(5000)
+# Split into training (70%) and test (30%) sets
+smp_size  <- floor(0.7 * nrow(sample_data))
+train_ind <- sample(seq_len(nrow(sample_data)), size = smp_size)
+df_train  <- sample_data[train_ind, ]
+df_test   <- sample_data[-train_ind, ]
+```
+
+
+```{r}
+formula <- bf(log_boughtInLastMonth ~ price + isBestSeller + category)
+prior <- default_prior(formula, data = df_train, family = gaussian())
+
+mod <- brm(
+  formula = formula,
+  data = df_train,
+  family = gaussian(),
+  prior = prior,
+  warmup = 1000,
+  iter = 4000,
+  chains = 4,
+  control = list(adapt_delta = 0.95, max_treedepth = 15),
+  seed = 42
+)
+```
+
+```{r}
+df_train$category <- factor(as.character(df_train$category))
+allowed_cat_levels <- levels(df_train$category)
+df_test$category <- factor(as.character(df_test$category), levels = allowed_cat_levels)
+
+# Now drop rows with NA in category (i.e. those with unknown levels)
+df_test_filtered <- df_test[!is.na(df_test$category), ]
+# (Optional) Report how many test rows are being used
+cat("Number of test observations before recasting:", nrow(df_test), "\n")
+cat("Number of test observations after recasting & filtering:", nrow(df_test_filtered), "\n")
+
+```
+
+```{r}
+
+```
+
+
+```{r}
+#summary(mod)
+```
+
+```{r}
+#plot(mod)
+```
+
+```{r}
+#plot(mod, type = "trace")
+```
+
+```{r}
+bayes_r2_value <- bayes_R2(mod)
+print(bayes_r2_value)
+```
+
+```{r}
+posterior_predictions <- posterior_predict(mod, newdata = df_test_filtered)
+test_predictions <- colMeans(posterior_predictions)
+head(test_predictions)
+```
+
+```{r}
+actuals <- df_test_filtered$log_boughtInLastMonth
+
+# Compute performance metrics: RMSE and MAE
+rmse <- sqrt(mean((actuals - test_predictions)^2))
+mae <- mean(abs(actuals - test_predictions))
+cat("Test RMSE:", rmse, "\n")
+cat("Test MAE:", mae, "\n")
+
+# Optionally, compute additional metrics (e.g., Median Absolute Error)
+medae <- median(abs(actuals - test_predictions))
+cat("Test Median Absolute Error:", medae, "\n")
+```
+
+```{r}
+df_results <- data.frame(actual = actuals, predicted = test_predictions)
+ggplot(df_results, aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Actual vs. Predicted Log Transformed Target",
+       x = "Actual Log(boughtInLastMonth)",
+       y = "Predicted Log(boughtInLastMonth)") + theme_minimal()
+```
+
+```{r}
+df_results$residuals <- actuals - test_predictions
+ggplot(df_results, aes(x = predicted, y = residuals)) +
+  geom_point(alpha = 0.7) +
+  geom_hline(yintercept = 0, color = "red", linetype = "dashed") +
+  labs(title = "Residual Plot",
+       x = "Predicted Log(boughtInLastMonth)",
+       y = "Residuals") + theme_minimal()
+```
+
+
+
+
+
+
+
+
+
