@@ -19,6 +19,7 @@ from ml_price import predict_price, predict_price_manually
 df = pd.read_csv('/Users/seanmerrkle/Desktop/Courses/DS4420/amz_us_price_prediction_dataset.csv')
 df = df.dropna()
 df['isBestSeller'] = df['isBestSeller'].astype(bool)
+print(df.shape)
 df = df.sample(n=1000)
 
 # One-hot encode category
