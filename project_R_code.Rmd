@@ -80,15 +80,16 @@ cat("Number of test observations after recasting & filtering:", nrow(df_test_fil
 
 
 ```{r}
-#summary(mod)
+summary(mod)
 ```
 
 ```{r}
-#plot(mod)
+plot(mod)
 ```
 
+
 ```{r}
-#plot(mod, type = "trace")
+plot(mod, type = "trace")
 ```
 
 ```{r}
