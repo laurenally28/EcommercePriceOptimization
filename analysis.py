@@ -6,9 +6,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 def evaluate_model_all(y_true, y_pred):
     """
-    Evaluate the regression model using multiple metrics: 
-        Mean Squared Error (MSE), Root Mean Squared Error (RMSE), 
-        Mean Absolute Error (MAE), and R squared score
+    Evaluate the regression model using multiple metrics
     """
     mse = mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
@@ -20,12 +18,12 @@ def plot_actual_vs_predicted(y_true, y_pred):
     """
     Plot actual vs. predicted values
     """
-    plt.figure(figsize=(8, 6))
     plt.scatter(y_true, y_pred, alpha=0.7)
     plt.xlabel("Actual Values")
     plt.ylabel("Predicted Values")
     plt.title("Actual vs Predicted Values")
-    # Plot a diagonal line for reference
+    
+    # Plot diagonal line for reference
     min_val = np.min([np.min(y_true), np.min(y_pred)])
     max_val = np.max([np.max(y_true), np.max(y_pred)])
     plt.plot([min_val, max_val], [min_val, max_val], color='red', lw=2)
