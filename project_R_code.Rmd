@@ -45,7 +45,7 @@ df_test   <- sample_data[-train_ind, ]
 
 
 ```{r}
-formula <- bf(log_boughtInLastMonth ~ price + isBestSeller + category)
+formula <- bf(log_boughtInLastMonth ~ price + stars + reviews + isBestSeller + category)
 prior <- default_prior(formula, data = df_train, family = gaussian())
 
 mod <- brm(
@@ -54,7 +54,7 @@ mod <- brm(
   family = gaussian(),
   prior = prior,
   warmup = 1000,
-  iter = 4000,
+  iter = 5000,
   chains = 4,
   control = list(adapt_delta = 0.95, max_treedepth = 15),
   seed = 42
@@ -80,15 +80,16 @@ cat("Number of test observations after recasting & filtering:", nrow(df_test_fil
 
 
 ```{r}
-#summary(mod)
+summary(mod)
 ```
 
 ```{r}
-#plot(mod)
+plot(mod)
 ```
 
+
 ```{r}
-#plot(mod, type = "trace")
+plot(mod, type = "trace")
 ```
 
 ```{r}

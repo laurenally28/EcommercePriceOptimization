@@ -1,6 +1,6 @@
 from helpers import load_data, prepare_data, relu, drelu, tanh, dtanh
 from neural_net import NeuralNetwork
-from analysis import evaluate_model_all, plot_actual_vs_predicted, plot_residuals, plot_error_histogram
+from analysis import evaluate_model_all, plot_actual_vs_predicted, plot_residuals, plot_error_histogram, plot_learning_curves, plot_sensitivity, sensitivity_analysis
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import numpy as np
@@ -37,7 +37,7 @@ def main():
     epochs = 10000
     
     nn = NeuralNetwork(input_size, hidden_size1, hidden_size2, output_size, relu, drelu)
-    nn.train(X_train, y_train, epochs, learning_rate)
+    loss_results = nn.train(X_train, y_train, epochs, learning_rate, X_val=X_test, y_val=y_test)
     predictions = nn.predict(X_test)
     
     # Inverse-transform the predictions back to original scale for comparison
@@ -54,6 +54,11 @@ def main():
     plot_actual_vs_predicted(y_test_unscaled, predictions_unscaled)
     plot_residuals(y_test_unscaled, predictions_unscaled)
     plot_error_histogram(y_test_unscaled, predictions_unscaled)
+    plot_learning_curves(loss_results['train_loss'], loss_results.get('val_loss'))
+    feature_names = ["stars", "reviews", "price", "isBestSeller", "cateogory_encoded", "title_sbert", "title_tfidf"]
+    sens = sensitivity_analysis(nn, X_test, feature_names)
+    print("Feature Sensitivities:", sens)
+    plot_sensitivity(sens)
 
 if __name__ == "__main__":
     main()

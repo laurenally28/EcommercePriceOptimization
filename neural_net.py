@@ -70,13 +70,36 @@ class NeuralNetwork:
         self.W1 -= learning_rate * dW1
         self.b1 -= learning_rate * db1
 
-    def train(self, X, y, epochs, learning_rate):
+    def train(self, X, y, epochs, learning_rate, X_val=None, y_val=None):
+        """
+        Train the neural network over a given number of epochs
+        If validation data (X_val and y_val) is provided, the method also logs validation loss
+        """
+        train_losses = []
+        val_losses = []
+        
         for epoch in range(epochs):
             output = self.forward(X)
             loss = np.mean(0.5 * (output - y.reshape(-1, 1)) ** 2)
+            train_losses.append(loss)
             self.backward(X, y, output, learning_rate)
+            
+            if X_val is not None and y_val is not None:
+                val_output = self.forward(X_val)
+                val_loss = np.mean(0.5 * (val_output - y_val.reshape(-1, 1)) ** 2)
+                val_losses.append(val_loss)
+            
             if epoch % 100 == 0:
-                print(f"Epoch: {epoch}, Loss: {loss:.4f}")
+                if X_val is not None and y_val is not None:
+                    print(f"Epoch: {epoch}, Train Loss: {loss:.4f}, Val Loss: {val_loss:.4f}")
+                else:
+                    print(f"Epoch: {epoch}, Train Loss: {loss:.4f}")
+                    
+        results = {'train_loss': train_losses}
+        if X_val is not None and y_val is not None:
+            results['val_loss'] = val_losses
+        return results
+
 
     def predict(self, X):
         return self.forward(X)
