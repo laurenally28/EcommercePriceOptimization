@@ -6,14 +6,17 @@ from sklearn.preprocessing import StandardScaler
 import numpy as np
 
 def main():
-    filename = '/Users/laurenally/Desktop/ML 2/amz_us_price_prediction_dataset.csv'
+    #filename = '/Users/laurenally/Desktop/ML 2/amz_us_price_prediction_dataset.csv'
+    filename = '/Users/seanmerrkle/Desktop/Courses/DS4420/amz_us_price_prediction_dataset.csv'
+    
     df = load_data(filename)
     
     # Randomly sample from very large dataset
     df = df.sample(n=16000, random_state=42)
-    
+
     # Prepare the data
-    X, y = prepare_data(df)
+    objective = "P" 
+    X, y = prepare_data(df, objective)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-
-
 def evaluate_model_all(y_true, y_pred):
     """
     Evaluate the regression model using multiple metrics

@@ -36,7 +36,7 @@ def dtanh(x):
     """
     return 1 - np.tanh(x) ** 2
 
-def prepare_data(df):
+def prepare_data(df, objective):
     """
     Prepare input features and target values from the DataFrame
     Converts columns to appropriate data types and returns NumPy arrays
@@ -65,9 +65,9 @@ def prepare_data(df):
 
     # numeric features
     numeric_features = df[['stars', 'reviews', 'price', 'isBestSeller']].to_numpy().astype(np.float64)
+    y = df['boughtInLastMonth'].to_numpy().astype(np.float64)
     
     # Combine numeric features with one-hot encoded categories and title features
     X = np.hstack((numeric_features, category_encoded, title_tfidf, title_sbert)).astype(np.float64)
-    y = df['boughtInLastMonth'].to_numpy().astype(np.float64)
     
     return X, y
