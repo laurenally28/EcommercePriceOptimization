@@ -15,8 +15,7 @@ def main():
     df = df.sample(n=16000, random_state=42)
 
     # Prepare the data
-    objective = "P" 
-    X, y = prepare_data(df, objective)
+    X, y = prepare_data(df)
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)

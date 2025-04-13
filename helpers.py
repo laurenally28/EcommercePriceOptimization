@@ -36,7 +36,7 @@ def dtanh(x):
     """
     return 1 - np.tanh(x) ** 2
 
-def prepare_data(df, objective):
+def prepare_data(df):
     """
     Prepare input features and target values from the DataFrame
     Converts columns to appropriate data types and returns NumPy arrays
