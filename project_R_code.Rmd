@@ -17,10 +17,6 @@ df <- read.csv("/Users/laurenally/Desktop/ML 2/amz_us_price_prediction_dataset.c
 ```
 
 ```{r}
-```
-
-
-```{r}
 head(df)
 ```
 
@@ -136,6 +132,7 @@ ggplot(df_results, aes(x = predicted, y = residuals)) +
 ```
 ```{r}
 # Calibration plot using posterior predictive density overlay
+
 library(bayesplot)
 y_rep <- posterior_predict(mod, newdata = df_test_filtered)
 ppc_stat(y = df_test_filtered$log_boughtInLastMonth, yrep = y_rep, stat = "mean")
@@ -146,12 +143,7 @@ ppc_stat(y = df_test_filtered$log_boughtInLastMonth, yrep = y_rep, stat = "mean"
 pp_check(mod)
 ```
 
-```{r}
-# Leave-One-Out Cross-Validation for model comparison
-library(loo)
-loo_mod <- loo(mod)
-print(loo_mod)
-```
+
 
 
 
